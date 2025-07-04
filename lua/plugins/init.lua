@@ -50,6 +50,15 @@ return {
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
+    init = function()
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "VeryLazy",
+        callback = function()
+          -- Setup vim.ui.input and vim.ui.select to use snacks
+          vim.ui.input = Snacks.input
+        end,
+      })
+    end,
     opts = {
       -- Core modules (keep enabled)
       bigfile = { enabled = true },
