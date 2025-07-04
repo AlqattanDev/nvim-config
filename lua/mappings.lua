@@ -1,39 +1,105 @@
+-- Load NvChad default mappings first
 require "nvchad.mappings"
 
--- add yours here
-
+-- Enhanced key mappings with better organization and error handling
 local map = vim.keymap.set
 
+-- Core editor mappings
 map("n", ";", ":", { desc = "CMD enter command mode" })
-map("i", "jk", "<ESC>")
+map("i", "jk", "<ESC>", { desc = "Exit insert mode" })
 
--- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
+-- Disable format on save toggle
+map("n", "<leader>uf", function()
+  vim.g.disable_autoformat = not vim.g.disable_autoformat
+  vim.notify(
+    string.format("Autoformat %s", vim.g.disable_autoformat and "disabled" or "enabled"),
+    vim.log.levels.INFO
+  )
+end, { desc = "Toggle autoformat" })
 
--- Cellular Automaton mappings
-map("n", "<leader>fml", "<cmd>CellularAutomaton make_it_rain<CR>", { desc = "Make it rain animation" })
-map("n", "<leader>gol", "<cmd>CellularAutomaton game_of_life<CR>", { desc = "Game of life animation" })
+-- Fun and experimental features
+map("n", "<leader>fml", function()
+  local ok, _ = pcall(vim.cmd, "CellularAutomaton make_it_rain")
+  if not ok then
+    vim.notify("CellularAutomaton plugin not available", vim.log.levels.WARN)
+  end
+end, { desc = "Make it rain animation" })
 
--- Snacks mappings (only for enabled modules)
-map("n", "<leader>gB", function() Snacks.gitbrowse() end, { desc = "Git Browse" })
-map("n", "<leader>gb", function() Snacks.git.blame_line() end, { desc = "Git Blame Line" })
-map("n", "<leader>gf", function() Snacks.lazygit.log_file() end, { desc = "Lazygit Current File History" })
-map("n", "<leader>gg", function() Snacks.lazygit() end, { desc = "Lazygit" })
-map("n", "<leader>gl", function() Snacks.lazygit.log() end, { desc = "Lazygit Log (cwd)" })
-map("n", "<leader>un", function() Snacks.notifier.hide() end, { desc = "Dismiss All Notifications" })
-map("n", "<leader>z", function() Snacks.zen() end, { desc = "Toggle Zen Mode" })
-map({ "n", "t" }, "]]", function() Snacks.words.jump(vim.v.count1) end, { desc = "Next Reference" })
-map({ "n", "t" }, "[[", function() Snacks.words.jump(-vim.v.count1) end, { desc = "Prev Reference" })
+map("n", "<leader>gol", function()
+  local ok, _ = pcall(vim.cmd, "CellularAutomaton game_of_life")
+  if not ok then
+    vim.notify("CellularAutomaton plugin not available", vim.log.levels.WARN)
+  end
+end, { desc = "Game of life animation" })
 
--- Snacks Terminal mappings (replacing NvChad terminal)
-map("n", "<leader>tt", function() Snacks.terminal() end, { desc = "Toggle Terminal" })
-map("n", "<leader>th", function() Snacks.terminal(nil, { win = { position = "bottom" } }) end, { desc = "Terminal Horizontal" })
-map("n", "<leader>tv", function() Snacks.terminal(nil, { win = { position = "right" } }) end, { desc = "Terminal Vertical" })
-map("n", "<leader>tf", function() Snacks.terminal(nil, { win = { position = "float" } }) end, { desc = "Terminal Float" })
+-- Git integration (Snacks)
+local git_mappings = {
+  ["<leader>gB"] = { function() Snacks.gitbrowse() end, "Git Browse" },
+  ["<leader>gb"] = { function() Snacks.git.blame_line() end, "Git Blame Line" },
+  ["<leader>gf"] = { function() Snacks.lazygit.log_file() end, "Lazygit Current File History" },
+  ["<leader>gg"] = { function() Snacks.lazygit() end, "Lazygit" },
+  ["<leader>gl"] = { function() Snacks.lazygit.log() end, "Lazygit Log (cwd)" },
+}
+
+for key, mapping in pairs(git_mappings) do
+  map("n", key, function()
+    local ok, err = pcall(mapping[1])
+    if not ok then
+      vim.notify("Snacks plugin error: " .. tostring(err), vim.log.levels.ERROR)
+    end
+  end, { desc = mapping[2] })
+end
+
+-- Terminal management (Snacks)
+local terminal_mappings = {
+  ["<leader>tt"] = { function() Snacks.terminal() end, "Toggle Terminal" },
+  ["<leader>th"] = { function() Snacks.terminal(nil, { win = { position = "bottom" } }) end, "Terminal Horizontal" },
+  ["<leader>tv"] = { function() Snacks.terminal(nil, { win = { position = "right" } }) end, "Terminal Vertical" },
+  ["<leader>tf"] = { function() Snacks.terminal(nil, { win = { position = "float" } }) end, "Terminal Float" },
+}
+
+for key, mapping in pairs(terminal_mappings) do
+  map("n", key, function()
+    local ok, err = pcall(mapping[1])
+    if not ok then
+      vim.notify("Snacks terminal error: " .. tostring(err), vim.log.levels.ERROR)
+    end
+  end, { desc = mapping[2] })
+end
+
 map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
 
--- Additional Snacks mappings for new modules
-map("n", "<leader>cR", function() Snacks.rename.rename_file() end, { desc = "Rename File" })
-map("n", "<leader>N", function() Snacks.notifier.show_history() end, { desc = "Notification History" })
-map("n", "<leader>ps", function() Snacks.profiler.scratch() end, { desc = "Profiler Scratch Buffer" })
-map("n", "<leader>.", function() Snacks.scratch() end, { desc = "Toggle Scratch Buffer" })
-map("n", "<leader>S", function() Snacks.scratch.select() end, { desc = "Select Scratch Buffer" })
+-- Quality of life utilities
+local utility_mappings = {
+  ["<leader>z"] = { function() Snacks.zen() end, "Toggle Zen Mode" },
+  ["<leader>un"] = { function() Snacks.notifier.hide() end, "Dismiss All Notifications" },
+  ["<leader>N"] = { function() Snacks.notifier.show_history() end, "Notification History" },
+  ["<leader>cR"] = { function() Snacks.rename.rename_file() end, "Rename File" },
+  ["<leader>ps"] = { function() Snacks.profiler.scratch() end, "Profiler Scratch Buffer" },
+  ["<leader>."] = { function() Snacks.scratch() end, "Toggle Scratch Buffer" },
+  ["<leader>S"] = { function() Snacks.scratch.select() end, "Select Scratch Buffer" },
+}
+
+for key, mapping in pairs(utility_mappings) do
+  map("n", key, function()
+    local ok, err = pcall(mapping[1])
+    if not ok then
+      vim.notify("Snacks utility error: " .. tostring(err), vim.log.levels.ERROR)
+    end
+  end, { desc = mapping[2] })
+end
+
+-- Word navigation
+map({ "n", "t" }, "]]", function()
+  local ok, err = pcall(function() Snacks.words.jump(vim.v.count1) end)
+  if not ok then
+    vim.notify("Snacks words navigation error: " .. tostring(err), vim.log.levels.ERROR)
+  end
+end, { desc = "Next Reference" })
+
+map({ "n", "t" }, "[[", function()
+  local ok, err = pcall(function() Snacks.words.jump(-vim.v.count1) end)
+  if not ok then
+    vim.notify("Snacks words navigation error: " .. tostring(err), vim.log.levels.ERROR)
+  end
+end, { desc = "Prev Reference" })

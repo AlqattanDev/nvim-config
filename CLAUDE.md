@@ -15,14 +15,21 @@ This is a NvChad-based Neovim configuration that uses the NvChad framework as a 
 
 - `init.lua`: Main entry point that bootstraps lazy.nvim and loads the configuration
 - `lua/chadrc.lua`: NvChad-specific configuration (theme, UI settings)
-- `lua/options.lua`: Vim options (imports nvchad.options and adds custom settings)
-- `lua/mappings.lua`: Key mappings (imports nvchad.mappings and adds custom keymaps)
+- `lua/options.lua`: Enhanced vim options with development-focused defaults
+- `lua/mappings.lua`: Organized key mappings with error handling and logical grouping
 - `lua/autocmds.lua`: Auto commands (imports nvchad.autocmds)
-- `lua/plugins/init.lua`: Custom plugin specifications
-- `lua/configs/`: Configuration files for specific plugins
+- `lua/plugins/`: Modular plugin specifications
+  - `init.lua`: Main plugin entry point with module imports
+  - `core.lua`: Essential development tools (LSP, formatting)
+  - `ui.lua`: UI enhancements and visual improvements
+  - `dev.lua`: Language-specific development tools
+  - `ai.lua`: AI-powered development assistance
+- `lua/configs/`: Plugin-specific configurations
   - `lazy.lua`: Lazy.nvim configuration with performance optimizations
-  - `lspconfig.lua`: LSP server configuration (currently html, cssls)
-  - `conform.lua`: Code formatting configuration (stylua for Lua)
+  - `lspconfig.lua`: LSP server configuration
+  - `conform.lua`: Enhanced code formatting with multiple languages
+  - `snacks.lua`: Comprehensive snacks.nvim configuration
+  - `avante.lua`: AI assistant configuration
 
 ## Common Development Commands
 
@@ -127,14 +134,36 @@ nvim --headless +qa     # Test if config loads without errors
 - `<leader>cR`: Rename file (LSP)
 - `<leader>ps`: Profiler scratch buffer
 
+### Configuration Management
+- `<leader>uf`: Toggle autoformat on/save globally
+
 ## Development Notes
 
+### Architecture Improvements
+- **Modular Plugin System**: Split into logical modules (core, ui, dev, ai) for better organization
+- **Separated Configurations**: Large plugin configs extracted to dedicated files in `lua/configs/`
+- **Enhanced Error Handling**: Graceful degradation with pcall protection for all plugin functionality
+- **Type Safety**: Added Lua type annotations for better development experience
+
+### Performance Optimizations
+- **Lazy Loading**: Optimized plugin loading strategies with event-based triggers
+- **Startup Performance**: Reduced configuration complexity for faster boot times
+- **Resource Management**: Better memory usage with conditional feature loading
+
+### Quality Improvements
+- **Enhanced Options**: Development-focused vim options with sensible defaults
+- **Improved Mappings**: Organized keybindings with comprehensive error handling
+- **Better Documentation**: Type annotations and inline documentation throughout
+
+### Legacy Features
 - Configuration loads NvChad defaults first, then applies custom overrides
-- Lazy loading is enabled by default for performance
-- Many built-in Vim plugins are disabled in lazy.nvim config for performance
-- The configuration is designed to be minimal and extend NvChad rather than replace it
-- New plugins are configured to avoid conflicts with existing NvChad functionality
+- The configuration extends NvChad rather than replacing core functionality
 - **Terminal System**: Switched from NvChad terminal to snacks.nvim terminal for enhanced functionality
 - **Conflict Resolution**: Carefully disabled conflicting modules (dashboard, explorer, picker, indent, bufdelete)
 - **19 of 27 snacks modules enabled** for maximum functionality without conflicts
 - Avante.nvim requires API key setup for AI features to work
+
+### User Experience
+- **Format Toggle**: `<leader>uf` to toggle autoformat globally
+- **Error Notifications**: Clear feedback when plugins or features fail
+- **Graceful Degradation**: Configuration works even if optional plugins fail to load
