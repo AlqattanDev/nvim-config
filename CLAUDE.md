@@ -80,9 +80,10 @@ nvim --headless +qa     # Test if config loads without errors
 - **mcphub.nvim**: MCP (Model Context Protocol) client integration
 
 ### Quality of Life
-- **snacks.nvim**: Collection of useful utilities (git integration, smooth scrolling, zen mode)
-  - Configured to avoid conflicts with NvChad (dashboard, explorer, picker disabled)
-  - Enables: git tools, lazygit, notifications, scroll, zen mode, word highlighting
+- **snacks.nvim**: Comprehensive collection of 27 utility modules (19 enabled)
+  - **Enabled modules**: terminal, animate, bigfile, debug, dim, git, gitbrowse, input, layout, lazygit, notify, profiler, quickfile, rename, scope, scratch, scroll, statuscolumn, toggle, words, zen, image
+  - **Disabled for compatibility**: dashboard, explorer, picker (conflicts with NvChad), indent, bufdelete (prefer NvChad versions)
+  - **Terminal management**: Switched from NvChad to snacks terminal system
 
 ### AI Integration
 - **avante.nvim**: AI-powered code assistance with Claude integration
@@ -109,10 +110,22 @@ nvim --headless +qa     # Test if config loads without errors
 - `<M-l>`: Accept AI suggestion
 - `<M-]>` / `<M-[>`: Navigate suggestions
 
-### Utilities
+### Terminal Management (Snacks)
+- `<leader>tt`: Toggle terminal
+- `<leader>th`: Terminal horizontal split
+- `<leader>tv`: Terminal vertical split  
+- `<leader>tf`: Terminal floating window
+- `<C-/>`: Hide terminal (in terminal mode)
+
+### Utilities (Snacks)
 - `<leader>z`: Toggle zen mode
 - `<leader>un`: Dismiss notifications
+- `<leader>N`: Notification history
 - `]]` / `[[`: Jump between word references
+- `<leader>.`: Toggle scratch buffer
+- `<leader>S`: Select scratch buffer
+- `<leader>cR`: Rename file (LSP)
+- `<leader>ps`: Profiler scratch buffer
 
 ## Development Notes
 
@@ -121,4 +134,7 @@ nvim --headless +qa     # Test if config loads without errors
 - Many built-in Vim plugins are disabled in lazy.nvim config for performance
 - The configuration is designed to be minimal and extend NvChad rather than replace it
 - New plugins are configured to avoid conflicts with existing NvChad functionality
+- **Terminal System**: Switched from NvChad terminal to snacks.nvim terminal for enhanced functionality
+- **Conflict Resolution**: Carefully disabled conflicting modules (dashboard, explorer, picker, indent, bufdelete)
+- **19 of 27 snacks modules enabled** for maximum functionality without conflicts
 - Avante.nvim requires API key setup for AI features to work
