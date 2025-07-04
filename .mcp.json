@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "MCP Neovim Server": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-neovim-server"
+      ],
+      "env": {
+        "ALLOW_SHELL_COMMANDS": "true",
+        "NVIM_SOCKET_PATH": "/tmp/nvim"
+      }
+    },
+    "FileScopeMCP": {
+      "command": "node",
+      "args": ["/Users/alialqattan/Clones/FileScopeMCP/dist/mcp-server.js", "--base-dir=/Users/alialqattan/Clones/FileScopeMCP"],
+      "transport": "stdio"
+    }
+  }
+}
