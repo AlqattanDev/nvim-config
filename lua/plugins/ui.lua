@@ -15,7 +15,7 @@ return {
     cmd = "CellularAutomaton",
   },
 
-  -- Statusline plugin for Claudia integration
+  -- Enhanced statusline plugin
   {
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -31,24 +31,7 @@ return {
           lualine_a = { "mode" },
           lualine_b = { "branch", "diff", "diagnostics" },
           lualine_c = { "filename" },
-          lualine_x = { 
-            function()
-              -- Claudia status integration
-              local ok, claudia = pcall(require, "claudia")
-              if ok then
-                local active_session = claudia.get_active_session()
-                if active_session then
-                  local needs_attention = claudia.get_session_attention_status(active_session)
-                  local attention_indicator = needs_attention and " ●" or ""
-                  return " Claudia: " .. active_session .. attention_indicator .. " "
-                end
-              end
-              return ""
-            end,
-            "encoding", 
-            "fileformat", 
-            "filetype" 
-          },
+          lualine_x = { "encoding", "fileformat", "filetype" },
           lualine_y = { "progress" },
           lualine_z = { "location" },
         },

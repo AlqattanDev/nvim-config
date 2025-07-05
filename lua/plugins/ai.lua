@@ -18,17 +18,4 @@ return {
     },
   },
 
-  -- Claudia nvim-ui integration
-  {
-    dir = "/Users/alialqattan/Clones/claudia/nvim-ui",
-    name = "claudia",
-    lazy = false,
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
-      "nvim-lualine/lualine.nvim",
-    },
-    config = function()
-      require("configs.claudia")
-    end,
-  },
 }
