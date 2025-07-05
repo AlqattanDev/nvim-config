@@ -98,9 +98,28 @@ nvim --headless +qa     # Test if config loads without errors
   - **Terminal management**: Switched from NvChad to snacks terminal system
 
 ### AI Integration
-- **avante.nvim**: AI-powered code assistance with Claude integration
-  - Requires API key configuration for full functionality
+- **avante.nvim**: AI-powered code assistance with multi-provider support
+  - **Primary**: GitHub Copilot (free with GitHub account)
+  - **Fallback**: OpenRouter with DeepSeek model (free tier)
+  - **Premium**: Claude (requires API key)
+  - **Dual boost**: Compare responses from multiple providers
   - Custom keybindings under `<leader>a` prefix to avoid conflicts
+
+#### AI Provider Setup
+**GitHub Copilot (Free - Default)**:
+```bash
+gh auth login  # GitHub CLI authentication
+```
+
+**OpenRouter (Free tier)**:
+```bash
+export OPENROUTER_API_KEY="your_key_here"  # Get free key from openrouter.ai
+```
+
+**Claude (Premium)**:
+```bash
+export ANTHROPIC_API_KEY="your_key_here"   # Requires paid Anthropic account
+```
 
 
 ## Custom Keybindings
