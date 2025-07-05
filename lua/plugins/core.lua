@@ -17,4 +17,20 @@ return {
       require "configs.lspconfig"
     end,
   },
+
+  -- Treesitter for enhanced syntax highlighting
+  {
+    "nvim-treesitter/nvim-treesitter",
+    event = { "BufReadPost", "BufNewFile" },
+    build = ":TSUpdate",
+    config = function()
+      require("nvim-treesitter.configs").setup(require "configs.treesitter")
+    end,
+  },
+
+  -- Schema store for JSON/YAML validation
+  {
+    "b0o/schemastore.nvim",
+    lazy = true,
+  },
 }

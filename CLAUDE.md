@@ -86,6 +86,12 @@ nvim --headless +qa     # Test if config loads without errors
 - **flutter-tools.nvim**: Flutter development tools with hot reload and device management
 - **mcphub.nvim**: MCP (Model Context Protocol) client integration
 
+### UI Enhancements
+- **lualine.nvim**: Modern statusline with Claudia session integration
+  - Shows active Claudia session with attention indicators
+  - Onedark theme integration for consistency
+  - Custom component for session status display
+
 ### Quality of Life
 - **snacks.nvim**: Comprehensive collection of 27 utility modules (19 enabled)
   - **Enabled modules**: terminal, animate, bigfile, debug, dim, git, gitbrowse, input, layout, lazygit, notify, profiler, quickfile, rename, scope, scratch, scroll, statuscolumn, toggle, words, zen, image
@@ -96,6 +102,12 @@ nvim --headless +qa     # Test if config loads without errors
 - **avante.nvim**: AI-powered code assistance with Claude integration
   - Requires API key configuration for full functionality
   - Custom keybindings under `<leader>a` prefix to avoid conflicts
+
+- **claudia**: Custom nvim-ui plugin for Claude Code backend integration
+  - Local plugin from `/Users/alialqattan/Clones/claudia/nvim-ui`
+  - Provides comprehensive Claude Code session management
+  - Includes MCP server management and checkpoint functionality
+  - Integrates with lualine for statusline session indicators
 
 ## Custom Keybindings
 
@@ -134,6 +146,13 @@ nvim --headless +qa     # Test if config loads without errors
 - `<leader>cR`: Rename file (LSP)
 - `<leader>ps`: Profiler scratch buffer
 
+### Claudia Integration
+- `<leader>cp`: Select Claudia project
+- `<leader>cs`: Select Claudia session
+- `<leader>cv`: Check Claude Code version
+- `<leader>cm`: List MCP servers
+- `<leader>cc`: Execute Claudia slash command
+
 ### Configuration Management
 - `<leader>uf`: Toggle autoformat on/save globally
 
@@ -167,3 +186,117 @@ nvim --headless +qa     # Test if config loads without errors
 - **Format Toggle**: `<leader>uf` to toggle autoformat globally
 - **Error Notifications**: Clear feedback when plugins or features fail
 - **Graceful Degradation**: Configuration works even if optional plugins fail to load
+
+## Plugin Management & Conflict Resolution
+
+### Disabling NvChad Default Plugins
+To disable any default NvChad plugin, add it to your plugin specification with `enabled = false`:
+
+```lua
+return {
+  { "plugin-name", enabled = false }
+}
+```
+
+Common plugins you might want to disable:
+- `nvim-tree/nvim-tree.lua`: Default file explorer
+- `folke/which-key.nvim`: Keybinding helper
+- `lewis6991/gitsigns.nvim`: Git decorations
+
+### Handling Plugin Conflicts
+When using external plugins that conflict with NvChad defaults:
+
+**Snacks modules that conflict with NvChad:**
+- `dashboard = false` (prefer NvChad nvdash)
+- `explorer = false` (prefer NvChad file explorer)
+- `picker = false` (prefer NvChad telescope)
+- `indent = false` (prefer NvChad indent-blankline)
+- `bufdelete = false` (prefer NvChad tabufline)
+
+**Best practices:**
+- Keep NvChad versions for better integration
+- Use `enabled = false` for conflicting external modules
+- Test configuration after making changes
+
+### Plugin Debugging Commands
+```bash
+nvim +Lazy                     # Open lazy.nvim plugin manager
+nvim +checkhealth              # Check plugin health and dependencies
+nvim --headless +qa            # Test if config loads without errors
+```
+
+### Plugin Loading Issues
+If you experience dual components (like file explorers):
+1. Identify conflicting plugins
+2. Disable the external plugin's conflicting module
+3. Use NvChad's default implementation
+4. Update keybindings to match the chosen implementation
+
+## Claudia Plugin Integration
+
+### Overview
+The Claudia plugin provides seamless integration with your Claude Code backend, offering:
+- **Project Management**: Browse and select Claude Code projects
+- **Session Control**: Manage active sessions with visual indicators
+- **MCP Integration**: Control Model Context Protocol servers
+- **Checkpoint System**: Create, restore, and manage session checkpoints
+- **Slash Commands**: Powerful command system with autocompletion
+
+### Available Commands
+All Claudia commands are available as Neovim commands and slash commands:
+
+**Project & Session Management:**
+- `:ClaudiaListProjects` - Browse available projects
+- `:ClaudiaGetSessions <project_id>` - List sessions for project
+- `:ClaudiaOpenNewSession [path]` - Open new Claude Code session
+
+**MCP Server Management:**
+- `:ClaudiaMcpList` - List all MCP servers
+- `:ClaudiaMcpGet <server_id>` - Get server details
+- `:ClaudiaMcpAdd <name> <url>` - Add new MCP server
+- `:ClaudiaMcpRemove <server_id>` - Remove MCP server
+
+**Claude Code Operations:**
+- `:ClaudiaCheckClaudeVersion` - Check Claude Code version
+- `:ClaudiaExecuteClaudeCode <path> <prompt> <model>` - Execute Claude Code
+- `:ClaudiaContinueClaudeCode <path> <prompt> <model>` - Continue conversation
+- `:ClaudiaResumeClaudeCode <path> <session_id> <prompt> <model>` - Resume session
+
+**Checkpoint Management:**
+- `:ClaudiaCreateCheckpoint <session_id> <project_id> <path> [index] [desc]`
+- `:ClaudiaRestoreCheckpoint <checkpoint_id> <session_id> <project_id> <path>`
+- `:ClaudiaListCheckpoints <session_id> <project_id> <path>`
+
+### Slash Command System
+Type `/` followed by a command name in supported filetypes (lua, markdown, text, python, javascript, typescript):
+
+**Examples:**
+- `/projects` - Select project interactively
+- `/sessions <project_id>` - Select session for project
+- `/check_version` - Check Claude Code version
+- `/mcp_list` - List MCP servers
+- `/execute <path> <prompt> <model>` - Execute Claude Code
+
+Use `<C-x><C-o>` for autocompletion of slash commands.
+
+### Statusline Integration
+The lualine statusline shows:
+- **Active Session**: Current Claudia session name
+- **Attention Indicator**: Red dot (●) when session needs input
+- **Session Status**: Visual feedback for session state
+
+### Backend Requirements
+Ensure the Claudia backend is built and accessible:
+```bash
+cd /Users/alialqattan/Clones/claudia/src-tauri
+cargo build --release
+```
+
+The plugin expects the backend at:
+`/Users/alialqattan/Clones/claudia/src-tauri/target/release/claudia`
+
+### Troubleshooting
+- **Plugin not loading**: Check that the nvim-ui directory exists and contains the plugin files
+- **Backend errors**: Verify the Claudia backend is built and executable
+- **Telescope errors**: Ensure telescope.nvim is installed and loaded
+- **Statusline issues**: Check that lualine.nvim is properly configured

@@ -89,6 +89,82 @@ for key, mapping in pairs(utility_mappings) do
   end, { desc = mapping[2] })
 end
 
+-- Claudia integration mappings
+local claudia_mappings = {
+  ["<leader>cp"] = { 
+    function()
+      local ok, config = pcall(require, "configs.claudia")
+      if ok then
+        config.enhanced_project_selector()
+      else
+        vim.notify("Claudia plugin not available", vim.log.levels.WARN)
+      end
+    end, 
+    "Claudia: Select Project" 
+  },
+  ["<leader>cs"] = { 
+    function()
+      local ok, config = pcall(require, "configs.claudia")
+      if ok then
+        config.enhanced_session_selector()
+      else
+        vim.notify("Claudia plugin not available", vim.log.levels.WARN)
+      end
+    end, 
+    "Claudia: Select Session" 
+  },
+  ["<leader>cv"] = { 
+    function()
+      local ok, claudia = pcall(require, "claudia")
+      if ok then
+        claudia.check_claude_version()
+      else
+        vim.notify("Claudia plugin not available", vim.log.levels.WARN)
+      end
+    end, 
+    "Claudia: Check Claude Version" 
+  },
+  ["<leader>cm"] = { 
+    function()
+      local ok, claudia = pcall(require, "claudia")
+      if ok then
+        claudia.mcp_list()
+      else
+        vim.notify("Claudia plugin not available", vim.log.levels.WARN)
+      end
+    end, 
+    "Claudia: List MCP Servers" 
+  },
+}
+
+for key, mapping in pairs(claudia_mappings) do
+  map("n", key, mapping[1], { desc = mapping[2] })
+end
+
+-- Claudia slash command input
+map("n", "<leader>cc", function()
+  vim.ui.input({ prompt = "Claudia Command: /" }, function(input)
+    if input and input ~= "" then
+      local ok, claudia = pcall(require, "claudia")
+      if ok then
+        claudia.handle_slash_command("/" .. input)
+      else
+        vim.notify("Claudia plugin not available", vim.log.levels.WARN)
+      end
+    end
+  end)
+end, { desc = "Claudia: Execute Slash Command" })
+
+-- File explorer toggle (override NvChad default)
+map("n", "<leader>e", function()
+  local ok, nvim_tree_api = pcall(require, "nvim-tree.api")
+  if ok then
+    nvim_tree_api.tree.toggle()
+  else
+    vim.notify("NvimTree not available", vim.log.levels.WARN)
+  end
+end, { desc = "Toggle file explorer" })
+
 -- Word navigation
 map({ "n", "t" }, "]]", function()
   local ok, err = pcall(function() Snacks.words.jump(vim.v.count1) end)

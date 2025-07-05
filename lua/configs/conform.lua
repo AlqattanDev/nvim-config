@@ -10,7 +10,44 @@ local options = {
     json = { "prettier" },
     markdown = { "prettier" },
     yaml = { "prettier" },
-    python = { "black" },
+    
+    -- Enhanced Python formatting with multiple options
+    python = { 
+      "ruff_fix",    -- Fast linter/formatter (preferred if available)
+      "ruff_format", -- Ruff's formatter  
+      "black",       -- Fallback to black (currently installed)
+    },
+    
+    -- Rust formatting
+    rust = { "rustfmt" },
+    
+    -- Go formatting with import management
+    go = { 
+      "goimports",   -- Imports management + formatting (preferred)
+      "gofmt",       -- Standard Go formatter (fallback)
+    },
+  },
+
+  -- Enhanced Python formatters configuration
+  formatters = {
+    ruff_fix = {
+      command = "ruff",
+      args = { "check", "--fix", "--stdin-filename", "$FILENAME", "-" },
+      stdin = true,
+    },
+    ruff_format = {
+      command = "ruff",
+      args = { "format", "--stdin-filename", "$FILENAME", "-" },
+      stdin = true,
+    },
+    -- Enhanced black configuration
+    black = {
+      prepend_args = { "--line-length", "88" },
+    },
+    -- Enhanced rustfmt configuration
+    rustfmt = {
+      prepend_args = { "--edition", "2021" },
+    },
   },
 
   -- Optional: Enable format on save
@@ -20,7 +57,7 @@ local options = {
       return
     end
     return {
-      timeout_ms = 500,
+      timeout_ms = 1000,  -- Increased timeout for Go/Rust compilation
       lsp_fallback = true,
     }
   end,

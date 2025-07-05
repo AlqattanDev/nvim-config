@@ -14,7 +14,7 @@ M.base46 = {
 	-- },
 }
 
--- M.nvdash = { load_on_startup = true }
+M.nvdash = { load_on_startup = false } -- Disabled in favor of snacks dashboard
 -- M.ui = {
 --       tabufline = {
 --          lazyload = false
